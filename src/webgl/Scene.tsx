@@ -1,31 +1,37 @@
-import { useMemo } from 'react'
-import { useKTX2 } from '@react-three/drei'
-import { Canvas, useThree } from '@react-three/fiber'
+import { Suspense } from 'react'
+import { OrbitControls } from '@react-three/drei'
+import { Canvas } from '@react-three/fiber'
 
-interface PlaneProps {
-  ktx2Url?: string | null
-}
+import { Floor } from '@/webgl/components/Floor'
 
-const Plane = ({ ktx2Url }: PlaneProps) => {
-  const texture = useKTX2(ktx2Url || '/text.ktx2')
-  const { viewport } = useThree()
-  const size = useMemo(() => {
-    return Math.min(viewport.height, viewport.width)
-  }, [viewport])
-  return (
-    <mesh scale={[size, size, 1]}>
-      <planeGeometry args={[1, 1]} />
-      <meshBasicMaterial map={texture} />
-    </mesh>
-  )
-}
-
-export function Scene({ ktx2Url }: { ktx2Url?: string | null }) {
+export function Scene() {
   return (
     <div className="absolute inset-0 h-full w-full">
-      <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
+      <Canvas shadows camera={{ position: [5, 5, 5], fov: 45 }}>
         <color attach="background" args={['#1d1d1d']} />
-        <Plane ktx2Url={ktx2Url} />
+
+        {/* Illuminazione */}
+        <ambientLight intensity={0.5} />
+        <directionalLight
+          position={[10, 10, 5]}
+          intensity={1.5}
+          castShadow
+          shadow-mapSize={2048}
+        />
+
+        {/* Controlli della camera */}
+        <OrbitControls makeDefault />
+
+        {/* Contenuto della scena */}
+        <Suspense fallback={null}>
+          <mesh>
+            <mesh>
+              <boxGeometry args={[1, 1, 1]} />
+              <meshStandardMaterial color="#ff6347" />
+            </mesh>
+          </mesh>
+          <Floor />
+        </Suspense>
       </Canvas>
     </div>
   )
