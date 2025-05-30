@@ -2,7 +2,7 @@ import { MeshReflectorMaterial } from '@react-three/drei'
 
 export function Floor() {
   return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
+    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
       <planeGeometry args={[10, 10]} />
       <MeshReflectorMaterial
         mirror={0.5}
